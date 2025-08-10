@@ -1,64 +1,110 @@
 .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  width: 920px;
+  height: 100vh;
+
+  background-color: #f9f9f9;
+  border-right: #e6e6e6;
+
+  &__header {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    align-items: flex-start;
+    justify-content: flex-end;
 
-    width: 920px;
-    height: 100vh;
+    width: 100%;
 
-    background-color: #f9f9f9;
-    border-right: #e6e6e6;
+    background-color: #ffffff;
 
-    &__header {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-end;
+    &__contents {
+      display: flex;
+      flex-direction: column;
 
-        width: 100%;
-        
-        background-color: #ffffff;
+      width: 100%;
 
-        &__contents {
-            display: flex;
-            flex-direction: column;
+      padding: 20px 20px;
+      margin-top: 68px;
 
-            width: 100%;
+      .input {
+        font-size: 36px;
+        font-weight: 700;
 
-            padding: 20px 20px;
-            margin-top: 68px;
+        outline: none;
 
-            .input{
-                font-size: 36px;
-                font-weight: 700;
-
-                outline: none;
-
-                &::placeholder {
-                    color: #c4c4c4; 
-                }
-            }
-            .progressBar{
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-
-                gap: 16px;
-                margin: 8px 0 16px 0;
-
-                &__status{
-                    color: #6d6d6d;
-                }
-                
-                &__calendar{
-                    display:flex;
-                    align-items: center;
-
-                    gap: 20px;
-                }
-            }
+        &::placeholder {
+          color: #c4c4c4;
         }
-    }
+      }
+      .progressBar {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
 
+        gap: 16px;
+        margin: 8px 0 16px 0;
+
+        &__status {
+          color: #6d6d6d;
+        }
+      }
+      .calendarBox {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &__calendar {
+          display: flex;
+          align-items: center;
+
+          gap: 20px;
+        }
+      }
+    }
+  }
+
+  &__body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: calc(100% - 250px);
+
+    padding: 28px 16px;
+
+    &__infoBox {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #454545;
+      }
+
+      .subTitle {
+        margin: 14px 0 28px 0;
+
+        font-size: 18px;
+        color: #454545;
+      }
+      .button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 74px;
+        height: 74px;
+
+        outline: none;
+        border: none;
+        cursor: pointer;
+      }
+    }
+  }
 }
