@@ -3,9 +3,39 @@
 import { Button } from "@/components/ui/button";
 import styles from "./page.module.scss";
 import { useRouter } from "next/navigation";
-
+import { supabase } from "@/utils/supabase";
+import { toast } from "sonner";
 function Home() {
   const router = useRouter();
+
+  //page 생성 및 supabase 연동
+  const onCreate = async() => {
+    const {error, status} = await supabase.from('todos').insert([
+      {
+        title: "",
+        start_date: new Date(),
+        end_date: new Date(),
+        contents: [],
+      },
+    ])
+    .select();
+    
+    if(error) {
+      console.log(error);
+    }
+
+     const {data} = await supabase.from('todos').select();
+
+    if(status === 201) {
+       toast("페이지 생성 완료", {
+        description: "새로운 투두리스트가 생성되었습니다.",
+      });
+      if(data) {
+      router.push(`/create/${data[data?.length-1].id}`);
+    }else return;
+    }
+
+  };
 
   return (
     <div className={styles.container}>
@@ -21,7 +51,7 @@ function Home() {
         <Button
           variant={"outline"}
           className="w-full bg-transparent text-emerald-500 border-emerald-500 hover:bg-emerald-50 hover:text-emerald-600"
-          onClick={()=>router.push("/create")}
+          onClick={onCreate}
         >
           Add new Page
         </Button>
