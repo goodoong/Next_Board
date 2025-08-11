@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import LabelCalendar from "../calendar/LabelCalendar";
 import { Separator } from "@/components/ui/separator";
 import { DialogClose } from "@radix-ui/react-dialog";
@@ -18,7 +19,25 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 function MarkdownDialog() {
-    const [contents, setContents] = useState<string |undefined>("**hello world!**");
+    const [title, setTitle] = useState<string>('');
+    const [content, setContent] = useState<string |undefined>("**hello world!**");
+
+    //supabase에 저장
+    const onSubmit = () => {
+        console.log('함수호출')
+
+        if(!title || !content) {
+           toast(
+           '기입되지 않은 데이터가 있습니다.', {
+          description: "제목, 날짜 혹은 콘텐츠 값을 모두 작성해주세요.",
+           });
+           return;
+        } else {
+            //supabase 데이터베이스에 연동
+            
+        }
+    };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -35,6 +54,7 @@ function MarkdownDialog() {
                 type="text"
                 placeholder="Write a title for your board."
                 className={styles.dialog__titleBox__title}
+                onChange={(event)=> setTitle(event.target.value)}
               />
             </div>
           </DialogTitle>
@@ -44,7 +64,7 @@ function MarkdownDialog() {
           </div>
           <Separator/>
           <div className={styles.dialog__markdown}>
-            <MDEditor value={contents} onChange={setContents} height={100 + "%"}/>
+            <MDEditor value={content} onChange={setContent} height={100 + "%"}/>
           </div>
         </DialogHeader>
         <DialogFooter>
@@ -60,6 +80,7 @@ function MarkdownDialog() {
             <Button
               type={"submit"}
               className="font-normal border-emerald-500 bg-emerald-400 text-white hover:bg-emerald-400 hover:text-white"
+                onClick={onSubmit}
             >
               Done
             </Button>
