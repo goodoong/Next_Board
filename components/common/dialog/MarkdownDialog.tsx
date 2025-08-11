@@ -1,8 +1,9 @@
-'use client'
+"use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import styles from "./MarkdownDialog.module.scss";
 import MDEditor from "@uiw/react-md-editor";
+import { supabase } from "@/utils/supabase";
 import {
   Dialog,
   DialogContent,
@@ -19,24 +20,41 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 function MarkdownDialog() {
-    const [title, setTitle] = useState<string>('');
-    const [content, setContent] = useState<string |undefined>("**hello world!**");
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string | undefined>(
+    "**hello world!**"
+  );
 
-    //supabase에 저장
-    const onSubmit = () => {
-        console.log('함수호출')
+  //supabase에 저장
+  const onSubmit = async () => {
+    console.log("함수호출");
 
-        if(!title || !content) {
-           toast(
-           '기입되지 않은 데이터가 있습니다.', {
-          description: "제목, 날짜 혹은 콘텐츠 값을 모두 작성해주세요.",
-           });
-           return;
-        } else {
-            //supabase 데이터베이스에 연동
-            
-        }
-    };
+    if (!title || !content) {
+      toast("기입되지 않은 데이터가 있습니다.", {
+        description: "제목, 날짜 혹은 콘텐츠 값을 모두 작성해주세요.",
+      });
+      return;
+    } else {
+      //supabase 데이터베이스에 연동
+
+      const { data, error, status } = await supabase
+        .from("todos")
+        .insert([{ title: title, content: content }])
+        .select();
+
+      if (error) {
+        console.log(error);
+        toast("에러가 발생했습니다.", {
+          description: "콘솔 창에 출력된 에러를 확인하세요.",
+        });
+      }
+      if (status === 201) {
+        toast("생성 완료", {
+          description: "작성한 글이 데이터베이스에 저장되었습니다.",
+        });
+      }
+    }
+  };
 
   return (
     <Dialog>
@@ -54,7 +72,7 @@ function MarkdownDialog() {
                 type="text"
                 placeholder="Write a title for your board."
                 className={styles.dialog__titleBox__title}
-                onChange={(event)=> setTitle(event.target.value)}
+                onChange={(event) => setTitle(event.target.value)}
               />
             </div>
           </DialogTitle>
@@ -62,9 +80,13 @@ function MarkdownDialog() {
             <LabelCalendar label="From" />
             <LabelCalendar label="To" />
           </div>
-          <Separator/>
+          <Separator />
           <div className={styles.dialog__markdown}>
-            <MDEditor value={content} onChange={setContent} height={100 + "%"}/>
+            <MDEditor
+              value={content}
+              onChange={setContent}
+              height={100 + "%"}
+            />
           </div>
         </DialogHeader>
         <DialogFooter>
@@ -80,7 +102,7 @@ function MarkdownDialog() {
             <Button
               type={"submit"}
               className="font-normal border-emerald-500 bg-emerald-400 text-white hover:bg-emerald-400 hover:text-white"
-                onClick={onSubmit}
+              onClick={onSubmit}
             >
               Done
             </Button>
