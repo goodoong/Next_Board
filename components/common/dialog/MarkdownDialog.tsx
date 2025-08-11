@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 function MarkdownDialog() {
+  const [open, setOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string | undefined>(
     "**hello world!**"
@@ -52,12 +53,15 @@ function MarkdownDialog() {
         toast("생성 완료", {
           description: "작성한 글이 데이터베이스에 저장되었습니다.",
         });
+
+        //등록 후 조건 초기화
+        setOpen(false);
       }
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <span className="font-normal text-gray-400 hover:text-gray-500 cursor-pointer">
           Add Contents
