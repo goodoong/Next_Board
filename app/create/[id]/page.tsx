@@ -1,10 +1,129 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import styles from "./page.module.scss";
 import { Progress } from "@/components/ui/progress";
 import LabelCalendar from "@/components/common/calendar/LabelCalendar";
 import Image from "next/image";
 import BasicBoard from "@/components/common/board/BasicBoard";
-function page() {
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { supabase } from "@/utils/supabase";
+import {nanoid} from "nanoid";
+
+interface Todo {
+  id: number;
+  title: string;
+  start_date: string | Date;
+  end_date: string | Date;
+  contents: BoardContent[];
+}
+
+interface BoardContent {
+  boardId: string | number;
+  isCompleted: boolean;
+  title: string;
+  startDate: string | Date;
+  endDate: string | Date;
+  content: string;
+}
+
+function Page() {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const [board, setBoard] = useState<Todo>();
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
+
+  const insertRowData = async (contents: BoardContent[]) => {
+    //supabase 데이터베이스에 연동
+    if (board?.contents) {
+      const { data, error, status } = await supabase
+        .from("todos")
+        .update({
+          contents: contents,
+        })
+        .eq("id", pathname.split("/")[2])
+        .select();
+
+      if (error) {
+        console.log(error);
+        toast("에러가 발생했습니다.", {
+          description: "콘솔 창에 출력된 에러를 확인하세요.",
+        });
+      }
+      if (status === 200) {
+        toast("추가 완료", {
+          description: "새로운 TO DO BOARD가 생성되었습니다.",
+        });
+        getData();
+      }
+    } else {
+      const { data, error, status } = await supabase
+        .from("todos")
+        .insert({
+          contents: contents,
+        })
+        .eq("id", pathname.split("/")[2])
+        .select();
+
+      if (error) {
+        console.log(error);
+        toast("에러가 발생했습니다.", {
+          description: "콘솔 창에 출력된 에러를 확인하세요.",
+        });
+      }
+      if (status === 201) {
+        toast("생성 완료", {
+          description: "새로운 TO DO BOARD가 생성되었습니다.",
+        });
+        getData();
+      }
+    }
+  };
+  const createBoard = () => {
+    let newContents: BoardContent[] = [];
+    const BoardContent = {
+      boardId: nanoid(),
+      isCompleted: false,
+      title: "",
+      startDate: "",
+      endDate: "",
+      content: "",
+    };
+
+    if (board && board.contents.length > 0) {
+      newContents = [...board.contents];
+      //기존 데이터에 새로운 데이터 추가
+      newContents.push(BoardContent);
+      insertRowData(newContents);
+    } else if (board && board.contents.length === 0) {
+      newContents.push(BoardContent);
+      insertRowData(newContents);
+    }
+  };
+  //supabase에 기존에 생성된 보드가 있는지 없는지 확인
+  const getData = async () => {
+    const {
+      data: todos,
+      error,
+      status,
+    } = await supabase.from("todos").select("*");
+
+    if (todos !== null) {
+      todos.forEach((item: Todo) => {
+        if (item.id === Number(pathname.split("/")[2])) {
+          setBoard(item);
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <div className={styles.container}>
       <header className={styles.container__header}>
@@ -31,6 +150,7 @@ function page() {
             </div>
             <Button
               variant={"outline"}
+              onClick={createBoard}
               className="w-[15%] border-emerald-400 bg-emerald-400 text-white hover:bg-emerald-600  hover:text-white"
             >
               Add New Board
@@ -39,24 +159,33 @@ function page() {
         </div>
       </header>
       <main className={styles.container__body}>
-        {/* <div className={styles.container__body__infoBox}>
-          <span className={styles.title}>There is no board yet</span>
-          <span className={styles.subTitle}>
-            Click the button and start flashing!
-          </span>
-          <button className={styles.button}>
-            <Image
-              src="/assets/img/plus-button.svg"
-              alt="plus-button"
-              width={100}
-              height={100}
-            />
-          </button>
-        </div> */}
-        <BasicBoard />
+        {board?.contents.length === 0 ? (
+         <div className="flex items-center justify-center w-full h-full">
+           <div className={styles.container__body__infoBox}>
+            <span className={styles.title}>There is no board yet</span>
+            <span className={styles.subTitle}>
+              Click the button and start flashing!
+            </span>
+            <button className={styles.button}>
+              <Image
+                src="/assets/img/plus-button.svg"
+                alt="plus-button"
+                width={100}
+                height={100}
+              />
+            </button>
+          </div>
+         </div>
+        ) : (
+          <div className="flex flex-col items-center justify-start w-full h-full gap-4">
+            {board?.contents.map((board: BoardContent) => {
+              return <BasicBoard key={board.boardId} />;
+            })}
+          </div>
+        )}
       </main>
     </div>
   );
 }
 
-export default page;
+export default Page;
