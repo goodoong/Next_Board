@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabase";
 import { nanoid } from "nanoid";
+import { ChevronLeft } from "lucide-react";
 
 interface Todo {
   id: number;
@@ -126,6 +127,11 @@ function Page() {
   }, []);
   return (
     <div className={styles.container}>
+      <div className="absolute top-6 left-7 flex items-center gap-2">
+        <Button variant={"outline"} size={"icon"} onClick={() => router.back()}>
+          <ChevronLeft />
+        </Button>
+      </div>
       <header className={styles.container__header}>
         <div className={styles.container__header__contents}>
           <input
