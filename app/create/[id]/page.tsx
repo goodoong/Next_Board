@@ -10,7 +10,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabase";
-import {nanoid} from "nanoid";
+import { nanoid } from "nanoid";
 
 interface Todo {
   id: number;
@@ -24,8 +24,8 @@ interface BoardContent {
   boardId: string | number;
   isCompleted: boolean;
   title: string;
-  startDate: string | Date;
-  endDate: string | Date;
+  startDate: string;
+  endDate: string;
   content: string;
 }
 
@@ -160,26 +160,26 @@ function Page() {
       </header>
       <main className={styles.container__body}>
         {board?.contents.length === 0 ? (
-         <div className="flex items-center justify-center w-full h-full">
-           <div className={styles.container__body__infoBox}>
-            <span className={styles.title}>There is no board yet</span>
-            <span className={styles.subTitle}>
-              Click the button and start flashing!
-            </span>
-            <button className={styles.button}>
-              <Image
-                src="/assets/img/plus-button.svg"
-                alt="plus-button"
-                width={100}
-                height={100}
-              />
-            </button>
+          <div className="flex items-center justify-center w-full h-full">
+            <div className={styles.container__body__infoBox}>
+              <span className={styles.title}>There is no board yet</span>
+              <span className={styles.subTitle}>
+                Click the button and start flashing!
+              </span>
+              <button className={styles.button}>
+                <Image
+                  src="/assets/img/plus-button.svg"
+                  alt="plus-button"
+                  width={100}
+                  height={100}
+                />
+              </button>
+            </div>
           </div>
-         </div>
         ) : (
           <div className="flex flex-col items-center justify-start w-full h-full gap-4">
             {board?.contents.map((board: BoardContent) => {
-              return <BasicBoard key={board.boardId} />;
+              return <BasicBoard key={board.boardId} data={board} />;
             })}
           </div>
         )}

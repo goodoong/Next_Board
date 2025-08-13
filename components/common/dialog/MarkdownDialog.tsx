@@ -37,7 +37,11 @@ interface BoardContent {
   content: string;
 }
 
-function MarkdownDialog() {
+interface Props {
+  data: BoardContent;
+}
+
+function MarkdownDialog({ data }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
@@ -65,10 +69,7 @@ function MarkdownDialog() {
         todos.forEach(async (item: Todo) => {
           if (item.id === Number(pathname.split("/")[2])) {
             item.contents.forEach((element: BoardContent) => {
-              if (
-                element.boardId ===
-                "P1PF1tsrOwQ95923flJX5"
-              ) {
+              if (element.boardId === "mp1sl7LiXEVQUVVfVsrF-") {
                 element.content = content;
                 element.title = title;
                 element.startDate = startDate;
@@ -102,7 +103,7 @@ function MarkdownDialog() {
             }
           }
         });
-      }else {
+      } else {
         return;
       }
     }
@@ -110,11 +111,20 @@ function MarkdownDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <span className="font-normal text-gray-400 hover:text-gray-500 cursor-pointer">
-          Add Contents
-        </span>
-      </DialogTrigger>
+      {data.title ? (
+        <DialogTrigger asChild>
+          <span className="font-normal text-gray-400 hover:text-gray-500 cursor-pointer">
+            Update Contents
+          </span>
+        </DialogTrigger>
+      ) : (
+        <DialogTrigger asChild>
+          <span className="font-normal text-gray-400 hover:text-gray-500 cursor-pointer">
+            Add Contents
+          </span>
+        </DialogTrigger>
+      )}
+
       <DialogContent className="!max-w-fit">
         <DialogHeader>
           <DialogTitle>
