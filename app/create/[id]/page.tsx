@@ -122,6 +122,10 @@ function Page() {
     }
   };
 
+  const onSave = () => {
+    
+  };
+
   useEffect(() => {
     getData();
   }, []);
@@ -130,6 +134,9 @@ function Page() {
       <div className="absolute top-6 left-7 flex items-center gap-2">
         <Button variant={"outline"} size={"icon"} onClick={() => router.back()}>
           <ChevronLeft />
+        </Button>
+        <Button variant={"outline"} onClick={onSave}>
+          저장
         </Button>
       </div>
       <header className={styles.container__header}>
@@ -172,7 +179,7 @@ function Page() {
               <span className={styles.subTitle}>
                 Click the button and start flashing!
               </span>
-              <button className={styles.button}>
+              <button className={styles.button} onClick={createBoard}>
                 <Image
                   src="/assets/img/plus-button.svg"
                   alt="plus-button"
@@ -183,7 +190,7 @@ function Page() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-start w-full h-full gap-4">
+          <div className="flex flex-col items-center justify-start w-full h-full gap-4 overflow-y-scroll">
             {board?.contents.map((board: BoardContent) => {
               return <BasicBoard key={board.boardId} data={board} />;
             })}
