@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Noto_Sans_KR } from "next/font/google";
 import "@/styles/globals.css";
 import SideNavigation from "@/components/common/navigation/SideNavigation";
 import { Toaster } from "@/components/ui/sonner";
 
-const roboto = Roboto({subsets:["latin"], weight: ['400', '500', '600']});
+const NOTO_SANS_KR = Noto_Sans_KR({subsets:["latin"], weight: ['400', '500', '600']});
 
 export const metadata: Metadata = {
   title: "Next - TodoBoard",
@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={roboto.className}
+        className={NOTO_SANS_KR.className}
       >
         <SideNavigation/>
         {children}
