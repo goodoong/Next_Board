@@ -33,7 +33,7 @@ function InitPage() {
         description: "새로운 투두리스트가 생성되었습니다.",
       });
       if (data) {
-        router.push(`/create/${data[data?.length - 1].id}`);
+        router.push(`/task/${data[data?.length - 1].id}`);
       } else return;
     }
   };

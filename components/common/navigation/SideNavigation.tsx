@@ -42,7 +42,7 @@ function SideNavigation() {
       });
       const { data } = await supabase.from("todos").select("*");
       if (data) {
-        router.push(`/create/${data[data?.length - 1].id}`);
+        router.push(`/task/${data[data?.length - 1].id}`);
         getTodos();
       }
     }
