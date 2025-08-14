@@ -22,14 +22,12 @@ function SideNavigation() {
   const [todos, setTodos] = useState<Todo[]>([]);
 
   const onCreate = async () => {
-    console.log("함수호출");
-
     //supabase 데이터베이스 row 생성
     const { error, status } = await supabase.from("todos").insert([
       {
         title: "",
-        start_date: "",
-        end_date: "",
+        start_date: new Date(),
+        end_date: new Date(),
         contents: [],
       },
     ]);
@@ -40,7 +38,11 @@ function SideNavigation() {
       toast("페이지 생성 완료", {
         description: "새로운 투두리스트가 생성되었습니다.",
       });
-      router.push("/create");
+      const { data } = await supabase.from("todos").select("*");
+      if (data) {
+        router.push(`/create/${data[data?.length - 1].id}`);
+        getTodos();
+      }
     }
   };
 
@@ -59,6 +61,7 @@ function SideNavigation() {
   useEffect(() => {
     getTodos();
   }, [todos]);
+  
   return (
     <div className={styles.container}>
       {/* 검색창 */}
@@ -85,19 +88,19 @@ function SideNavigation() {
         <span className={styles.container__todos_label}>Your To do</span>
         <div className={styles.container__todos__list}>
           {todos &&
-          todos.map((item) => {
-            return (
-              <div
-                key={item.id}
-                className="flex items-center py-2 bg-[#f4f4f4] rounded-sm cursor-pointer"
-              >
-                <Dot className="mr-1 text-green-400"></Dot>
-                <span className="text-sm">
-                  {item.title === "" ? "제목없음" : item.title}
-                </span>
-              </div>
-            );
-          })}
+            todos.map((item) => {
+              return (
+                <div
+                  key={item.id}
+                  className="flex items-center py-2 bg-[#f4f4f4] rounded-sm cursor-pointer"
+                >
+                  <Dot className="mr-1 text-green-400"></Dot>
+                  <span className="text-sm">
+                    {item.title === "" ? "제목없음" : item.title}
+                  </span>
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>
