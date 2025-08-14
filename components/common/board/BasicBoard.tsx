@@ -6,6 +6,8 @@ import MarkdownDialog from "../dialog/MarkdownDialog";
 import { supabase } from "@/utils/supabase";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
+import MDEditor from "@uiw/react-md-editor";
+import { Card } from "@/components/ui/card";
 
 interface Todo {
   id: number;
@@ -26,9 +28,10 @@ interface BoardContent {
 
 interface Props {
   data: BoardContent;
+  handleBoards: (data: Todo) => void;
 }
 
-function BasicBoard({ data }: Props) {
+function BasicBoard({ data, handleBoards }: Props) {
   const pathname = usePathname();
   const handleDelete = async (id: string | number) => {
     //해당 Board에 대한 데이터만 수정 혹은 삭제
@@ -37,7 +40,6 @@ function BasicBoard({ data }: Props) {
     if (todos !== null) {
       todos.forEach(async (item: Todo) => {
         if (item.id === Number(pathname.split("/")[2])) {
-          console.log(item);
           //삭제하려는 board의 id와 다른 것만 다시 배열만들어 DB에 저장
           const newContents = item.contents.filter(
             (element: BoardContent) => element.boardId !== id
@@ -61,9 +63,23 @@ function BasicBoard({ data }: Props) {
             toast("삭제 완료", {
               description: "supabase에서 삭제되었습니다.",
             });
-          } else {
-            return;
+            getData();
           }
+        } else {
+          return;
+        }
+      });
+    }
+  };
+
+  //supabase에 기존에 생성된 보드가 있는지 없는지 확인
+  const getData = async () => {
+    const { data: todos } = await supabase.from("todos").select("*");
+
+    if (todos !== null) {
+      todos.forEach((item: Todo) => {
+        if (item.id === Number(pathname.split("/")[2])) {
+          handleBoards(item);
         }
       });
     }
@@ -93,6 +109,7 @@ function BasicBoard({ data }: Props) {
           <div className="flex items-center gap-3">
             <span className="text-[#6d6d6d]">From</span>
             <input
+              className="text-[#6d6d6d]"
               value={
                 data.startDate !== ""
                   ? data.startDate.split("T")[0]
@@ -104,6 +121,7 @@ function BasicBoard({ data }: Props) {
           <div className="flex items-center gap-3">
             <span className="text-[#6d6d6d]">To</span>
             <input
+              className="text-[#6d6d6d]"
               value={
                 data.endDate !== "" ? data.endDate.split("T")[0] : "pick a date"
               }
@@ -127,6 +145,11 @@ function BasicBoard({ data }: Props) {
           </Button>
         </div>
       </div>
+      {data.content && (
+        <Card className="w-full p-4 mb-3">
+          <MDEditor.Markdown source={data.content} />
+        </Card>
+      )}
       <div className={styles.container__footer}>
         <MarkdownDialog data={data} />
       </div>
