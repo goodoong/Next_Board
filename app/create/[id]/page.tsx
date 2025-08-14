@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabase";
 import { nanoid } from "nanoid";
 import { ChevronLeft } from "lucide-react";
+import path from "path";
 
 interface Todo {
   id: number;
@@ -37,6 +38,7 @@ function Page() {
   const [board, setBoard] = useState<Todo>();
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
+  const [title, setTitle] = useState<string>("");
 
   const insertRowData = async (contents: BoardContent[]) => {
     //supabase 데이터베이스에 연동
@@ -117,33 +119,55 @@ function Page() {
       todos.forEach((item: Todo) => {
         if (item.id === Number(pathname.split("/")[2])) {
           setBoard(item);
+          setTitle(item.title); //board를 가져온 후에 title 값을 갱신
         }
       });
     }
   };
 
-  const onSave = () => {
-    
+  const onSave = async() => {
+    const {data, error, status} = await supabase.from('todos').update({
+      title:title,
+    }).eq('id', pathname.split('/')[2]);
+
+    if (error) {
+        console.log(error);
+        toast("에러가 발생했습니다.", {
+          description: "콘솔 창에 출력된 에러를 확인하세요.",
+        });
+      }
+      if (status === 204) {
+        toast("제목 업데이트 완료", {
+          description: "새로운 title이 설정되었습니다.",
+        });
+        getData();
+      }
   };
 
   useEffect(() => {
     getData();
   }, []);
-  
+
   return (
     <div className={styles.container}>
       <header className={styles.container__header}>
         <div className="top-6 left-7 flex items-center gap-2">
-        <Button variant={"outline"} size={"icon"} onClick={() => router.back()}>
-          <ChevronLeft />
-        </Button>
-        <Button variant={"outline"} onClick={onSave}>
-          저장
-        </Button>
-      </div>
+          <Button
+            variant={"outline"}
+            size={"icon"}
+            onClick={() => router.back()}
+          >
+            <ChevronLeft />
+          </Button>
+          <Button variant={"outline"} onClick={onSave}>
+            저장
+          </Button>
+        </div>
         <div className={styles.container__header__contents}>
           <input
             type="text"
+            value={title}
+            onChange={(event)=>setTitle(event.target.value)}
             placeholder="Enter Title Here"
             className={styles.input}
           />
@@ -193,7 +217,13 @@ function Page() {
         ) : (
           <div className="flex flex-col items-center justify-start w-full h-full gap-4 overflow-y-scroll">
             {board?.contents.map((board: BoardContent) => {
-              return <BasicBoard key={board.boardId} data={board} handleBoards={setBoard}/>;
+              return (
+                <BasicBoard
+                  key={board.boardId}
+                  data={board}
+                  handleBoards={setBoard}
+                />
+              );
             })}
           </div>
         )}
