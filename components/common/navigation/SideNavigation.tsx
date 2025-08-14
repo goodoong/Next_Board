@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabase";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { sidebarStateAtom } from "@/store";
 
 type Todo = {
   id: string;
@@ -20,7 +22,7 @@ type Todo = {
 function SideNavigation() {
   const router = useRouter();
   const [todos, setTodos] = useState<Todo[]>([]);
-
+  const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom);
   const onCreate = async () => {
     //supabase 데이터베이스 row 생성
     const { error, status } = await supabase.from("todos").insert([
@@ -54,14 +56,14 @@ function SideNavigation() {
       status,
     } = await supabase.from("todos").select("*");
 
-    if (status === 200) {
-      setTodos(todos ?? []);
-    }
+    setTodos(todos ?? []);
+    return todos;
   };
   useEffect(() => {
     getTodos();
-  }, [todos]);
-  
+  }, [sidebarState]);
+  //sidebarState 값이 변할 때마다 getTodos 실행
+
   return (
     <div className={styles.container}>
       {/* 검색창 */}

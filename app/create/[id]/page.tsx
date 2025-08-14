@@ -12,7 +12,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabase";
 import { nanoid } from "nanoid";
 import { ChevronLeft } from "lucide-react";
-import path from "path";
+import { useAtom } from "jotai";
+import { sidebarStateAtom } from "@/store";
 
 interface Todo {
   id: number;
@@ -35,6 +36,7 @@ function Page() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom);
   const [board, setBoard] = useState<Todo>();
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
@@ -141,6 +143,9 @@ function Page() {
           description: "새로운 title이 설정되었습니다.",
         });
         getData();
+
+        //상태 변경 함수(ex: onSave가 호출될 때 상태 변경)
+        setSidebarState("updated");
       }
   };
 
