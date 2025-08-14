@@ -166,7 +166,7 @@ function BasicBoard({ data, handleBoards }: Props) {
         </Card>
       )}
       <div className={styles.container__footer}>
-        <MarkdownDialog data={data} />
+        <MarkdownDialog data={data} updateBoards={getData}/>
       </div>
     </div>
   );

@@ -39,9 +39,10 @@ interface BoardContent {
 
 interface Props {
   data: BoardContent;
+  updateBoards: ()=> void;
 }
 
-function MarkdownDialog({ data }: Props) {
+function MarkdownDialog({ data, updateBoards }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
@@ -72,12 +73,7 @@ function MarkdownDialog({ data }: Props) {
                 element.title = title;
                 element.startDate = startDate;
                 element.endDate = endDate;
-              } else {
-                element.content = element.content;
-                element.title = element.title;
-                element.startDate = element.startDate;
-                element.endDate = element.endDate;
-              }
+              } else return;
             });
             //supabase 데이터베이스에 연동
             const { data, error, status } = await supabase
@@ -98,8 +94,9 @@ function MarkdownDialog({ data }: Props) {
 
               //등록 후 조건 초기화
               setOpen(false);
+              updateBoards();
             }
-          }
+          }else return;
         });
       } else {
         return;
@@ -162,7 +159,7 @@ function MarkdownDialog({ data }: Props) {
             </DialogClose>
             <Button
               type={"submit"}
-              className="font-normal border-emerald-500 bg-emerald-400 text-white hover:bg-emerald-400 hover:text-white"
+              className="font-normal border-emerald-500 bg-emerald-400 text-white hover:bg-emerald-500 hover:text-white"
               onClick={() => onSubmit(data.boardId)}
             >
               Done
