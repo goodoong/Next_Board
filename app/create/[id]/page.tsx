@@ -129,9 +129,11 @@ function Page() {
   useEffect(() => {
     getData();
   }, []);
+  
   return (
     <div className={styles.container}>
-      <div className="absolute top-6 left-7 flex items-center gap-2">
+      <header className={styles.container__header}>
+        <div className="top-6 left-7 flex items-center gap-2">
         <Button variant={"outline"} size={"icon"} onClick={() => router.back()}>
           <ChevronLeft />
         </Button>
@@ -139,7 +141,6 @@ function Page() {
           저장
         </Button>
       </div>
-      <header className={styles.container__header}>
         <div className={styles.container__header__contents}>
           <input
             type="text"
