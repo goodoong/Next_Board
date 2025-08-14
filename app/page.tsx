@@ -39,7 +39,7 @@ function InitPage() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center  justify-center">
+    <div className="w-full h-full flex flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center gap-5 mb-6">
         <span className="scroll-m20 text-2xl font-semibold tracking-tight">
           How to Start:{" "}

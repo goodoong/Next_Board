@@ -127,26 +127,29 @@ function Page() {
     }
   };
 
-  const onSave = async() => {
-    const {data, error, status} = await supabase.from('todos').update({
-      title:title,
-    }).eq('id', pathname.split('/')[2]);
+  const onSave = async () => {
+    const { data, error, status } = await supabase
+      .from("todos")
+      .update({
+        title: title,
+      })
+      .eq("id", pathname.split("/")[2]);
 
     if (error) {
-        console.log(error);
-        toast("에러가 발생했습니다.", {
-          description: "콘솔 창에 출력된 에러를 확인하세요.",
-        });
-      }
-      if (status === 204) {
-        toast("제목 업데이트 완료", {
-          description: "새로운 title이 설정되었습니다.",
-        });
-        getData();
+      console.log(error);
+      toast("에러가 발생했습니다.", {
+        description: "콘솔 창에 출력된 에러를 확인하세요.",
+      });
+    }
+    if (status === 204) {
+      toast("제목 업데이트 완료", {
+        description: "새로운 title이 설정되었습니다.",
+      });
+      getData();
 
-        //상태 변경 함수(ex: onSave가 호출될 때 상태 변경)
-        setSidebarState("updated");
-      }
+      //상태 변경 함수(ex: onSave가 호출될 때 상태 변경)
+      setSidebarState("updated");
+    }
   };
 
   useEffect(() => {
@@ -154,30 +157,34 @@ function Page() {
   }, []);
 
   return (
-    <div className={styles.container}>
-      <header className={styles.container__header}>
-        <div className="top-6 left-7 flex items-center gap-2">
-          <Button
-            variant={"outline"}
-            size={"icon"}
-            onClick={() => router.back()}
-          >
-            <ChevronLeft />
-          </Button>
-          <Button variant={"outline"} onClick={onSave}>
-            저장
-          </Button>
-        </div>
-        <div className={styles.container__header__contents}>
+    <div className="w-full">
+      <div className="absolute top-25 ml-4 flex items-center gap-2">
+        <Button
+          variant={"outline"}
+          size={"icon"}
+          onClick={() => router.push("/")}
+        >
+          <ChevronLeft />
+        </Button>
+
+        <Button variant={"outline"} onClick={onSave}>
+          저장
+        </Button>
+        <Button variant={"outline"} onClick={onSave}>
+          삭제
+        </Button>
+      </div>
+      <header className="w-full flex flex-col  py-[20px] px-[24px]  bg-white">
+        <div className="flex flex-col w-full">
           <input
             type="text"
             value={title}
-            onChange={(event)=>setTitle(event.target.value)}
+            onChange={(event) => setTitle(event.target.value)}
             placeholder="Enter Title Here"
-            className={styles.input}
+            className="text-[36px] font-semibold outline-none placeholder:text-[#c4c4c4]"
           />
-          <div className={styles.progressBar}>
-            <span className={styles.progressBar__status}>0/10 completed</span>
+          <div className="flex items-center justify-start gap-[16px] mt-[8px] mb-[16px]">
+            <span className="text-[#6d6d6d]">0/10 completed</span>
             {/* 프로그레스 바 UI */}
             <Progress
               value={33}
@@ -185,8 +192,8 @@ function Page() {
               indicatorColor="bg-green-500"
             />
           </div>
-          <div className={styles.calendarBox}>
-            <div className={styles.calendarBox__calendar}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-[20px]">
               {/* 캘린더 UI */}
               <LabelCalendar label="From" readonly={true} />
               <LabelCalendar label="To" />
@@ -201,15 +208,20 @@ function Page() {
           </div>
         </div>
       </header>
-      <main className={styles.container__body}>
+      <main className="flex items-center justify-center w-full py-[28px] px-[16px]">
         {board?.contents.length === 0 ? (
           <div className="flex items-center justify-center w-full h-full">
-            <div className={styles.container__body__infoBox}>
-              <span className={styles.title}>There is no board yet</span>
-              <span className={styles.subTitle}>
+            <div className="flex flex-col items-center">
+              <span className="text-[24px] font-semibold text-[#454545]">
+                There is no board yet
+              </span>
+              <span className="text-[18px] text-[#454545] mt-[18px] mb-[28px]">
                 Click the button and start flashing!
               </span>
-              <button className={styles.button} onClick={createBoard}>
+              <button
+                className="flex items-center justify-center w-[74px] h-[74px] outline-none border-none cursor-pointer"
+                onClick={createBoard}
+              >
                 <Image
                   src="/assets/img/plus-button.svg"
                   alt="plus-button"
