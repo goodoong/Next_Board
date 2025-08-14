@@ -53,9 +53,7 @@ function MarkdownDialog({ data }: Props) {
   );
 
   //supabase에 저장
-  const onSubmit = async () => {
-    console.log("함수호출");
-
+  const onSubmit = async (id: string | number) => {
     if (!title || !startDate || !endDate || !content) {
       toast("기입되지 않은 데이터가 있습니다.", {
         description: "제목, 날짜 혹은 콘텐츠 값을 모두 작성해주세요.",
@@ -69,7 +67,7 @@ function MarkdownDialog({ data }: Props) {
         todos.forEach(async (item: Todo) => {
           if (item.id === Number(pathname.split("/")[2])) {
             item.contents.forEach((element: BoardContent) => {
-              if (element.boardId === "mp1sl7LiXEVQUVVfVsrF-") {
+              if (element.boardId === id) {
                 element.content = content;
                 element.title = title;
                 element.startDate = startDate;
@@ -133,6 +131,7 @@ function MarkdownDialog({ data }: Props) {
               <input
                 type="text"
                 placeholder="Write a title for your board."
+                value={data.title ? data.title : title}
                 className={styles.dialog__titleBox__title}
                 onChange={(event) => setTitle(event.target.value)}
               />
@@ -145,7 +144,7 @@ function MarkdownDialog({ data }: Props) {
           <Separator />
           <div className={styles.dialog__markdown}>
             <MDEditor
-              value={content}
+              value={data.content ? data.content : content}
               onChange={setContent}
               height={100 + "%"}
             />
@@ -164,7 +163,7 @@ function MarkdownDialog({ data }: Props) {
             <Button
               type={"submit"}
               className="font-normal border-emerald-500 bg-emerald-400 text-white hover:bg-emerald-400 hover:text-white"
-              onClick={onSubmit}
+              onClick={() => onSubmit(data.boardId)}
             >
               Done
             </Button>
