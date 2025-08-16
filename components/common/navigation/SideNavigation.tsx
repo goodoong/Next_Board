@@ -1,7 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button, Input } from "@/components/ui";
 import styles from "./SideNavigation.module.scss";
 import { Dot, Search } from "lucide-react";
 import { useRouter } from "next/navigation";

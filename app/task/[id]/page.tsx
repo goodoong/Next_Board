@@ -1,9 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import styles from "./page.module.scss";
-import { Progress } from "@/components/ui/progress";
-import LabelCalendar from "@/components/common/calendar/LabelCalendar";
+import { Button, Progress, LabelDatePicker, } from "@/components/ui";
+
 import Image from "next/image";
 import BasicBoard from "@/components/common/board/BasicBoard";
 import { usePathname, useRouter } from "next/navigation";
@@ -194,8 +192,8 @@ function Page() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-[20px]">
               {/* 캘린더 UI */}
-              <LabelCalendar label="From" readonly={true} />
-              <LabelCalendar label="To" />
+              <LabelDatePicker label="From" readonly={true} />
+              <LabelDatePicker label="To" />
             </div>
             <Button
               variant={"outline"}

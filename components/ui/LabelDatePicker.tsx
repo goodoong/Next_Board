@@ -4,20 +4,20 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
+  Button,
+  Calendar,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/components/ui";
 
 interface Props {
   label: string;
   readonly?: boolean;
 }
 
-function LabelDatePicker({ label, readonly}: Props) {
+function LabelDatePicker({ label, readonly }: Props) {
   const [date, setDate] = useState<Date>();
 
   return (
@@ -47,4 +47,4 @@ function LabelDatePicker({ label, readonly}: Props) {
   );
 }
 
-export {LabelDatePicker};
+export { LabelDatePicker };

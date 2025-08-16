@@ -1,13 +1,11 @@
-import { Button } from "@/components/ui/button";
+import { Button, Checkbox, Card } from "@/components/ui";
 import styles from "./BasicBoard.module.scss";
-import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronUp } from "lucide-react";
 import MarkdownDialog from "../dialog/MarkdownDialog";
 import { supabase } from "@/utils/supabase";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import MDEditor from "@uiw/react-md-editor";
-import { Card } from "@/components/ui/card";
 
 interface Todo {
   id: number;

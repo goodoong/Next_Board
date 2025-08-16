@@ -1,22 +1,23 @@
 "use client";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import styles from "./MarkdownDialog.module.scss";
-import MDEditor from "@uiw/react-md-editor";
-import { supabase } from "@/utils/supabase";
 import {
+  Checkbox,
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+  LabelDatePicker,
+  Button,
+  Separator,
+} from "@/components/ui";
+import styles from "./MarkdownDialog.module.scss";
+import MDEditor from "@uiw/react-md-editor";
+import { supabase } from "@/utils/supabase";
+
 import { toast } from "sonner";
-import LabelCalendar from "../calendar/LabelCalendar";
-import { Separator } from "@/components/ui/separator";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 
@@ -39,7 +40,7 @@ interface BoardContent {
 
 interface Props {
   data: BoardContent;
-  updateBoards: ()=> void;
+  updateBoards: () => void;
 }
 
 function MarkdownDialog({ data, updateBoards }: Props) {
@@ -96,7 +97,7 @@ function MarkdownDialog({ data, updateBoards }: Props) {
               setOpen(false);
               updateBoards();
             }
-          }else return;
+          } else return;
         });
       } else {
         return;
@@ -135,8 +136,8 @@ function MarkdownDialog({ data, updateBoards }: Props) {
             </div>
           </DialogTitle>
           <div className={styles.dialog__calendarBox}>
-            <LabelCalendar label="From" />
-            <LabelCalendar label="To" />
+            <LabelDatePicker label="From" />
+            <LabelDatePicker label="To" />
           </div>
           <Separator />
           <div className={styles.dialog__markdown}>
