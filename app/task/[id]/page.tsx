@@ -189,7 +189,6 @@ function Page() {
             <Progress
               value={33}
               className="w-[40%] h-2"
-              indicatorColor="bg-green-500"
             />
           </div>
           <div className="flex items-center justify-between">
