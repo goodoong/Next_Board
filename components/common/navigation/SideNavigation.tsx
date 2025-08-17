@@ -8,7 +8,8 @@ function SideNavigation() {
   const handleCreateTask = useCreateTask();
 
   return (
-    <div className="flex flex-col w-[280px] h-screen py-[20px] px-[24px] gap-2 border-x-[1px] border-[#e6e6e6]">
+    <aside className="page__aside">
+  <div className="flex flex-col h-full gap-3">
       {/* 검색창 */}
       <div className="flex items-center justify-start gap-[4px]">
         <Input
@@ -42,6 +43,8 @@ function SideNavigation() {
         </div>
       </div>
     </div>
+    </aside>
+  
   );
 }
 

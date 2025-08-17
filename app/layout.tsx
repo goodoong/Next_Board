@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import "@/styles/globals.css";
+import "@/styles/main.scss";
 import SideNavigation from "@/components/common/navigation/SideNavigation";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -21,8 +22,13 @@ export default function RootLayout({
       <body
         className={NOTO_SANS_KR.className}
       >
-        <SideNavigation/>
+        <div className="page">
+<SideNavigation/>
+       <main className="page__main">
         {children}
+       </main>
+        </div>
+        
         <Toaster />
       </body>
     </html>
