@@ -1,13 +1,13 @@
 "use client";
 
-import { Button, Progress, LabelDatePicker, } from "@/components/ui";
+import { Button, Progress, LabelDatePicker } from "@/components/ui";
 
 import Image from "next/image";
 import BasicBoard from "@/components/common/board/BasicBoard";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/utils/supabase/client";
 import { nanoid } from "nanoid";
 import { ChevronLeft } from "lucide-react";
 import { useAtom } from "jotai";
@@ -125,7 +125,7 @@ function Page() {
     }
   };
 
-  const onSave = async () => {
+  const handleSave = async () => {
     const { data, error, status } = await supabase
       .from("todos")
       .update({
@@ -156,7 +156,7 @@ function Page() {
 
   return (
     <div className="w-full">
-      <div className="absolute top-25 ml-4 flex items-center gap-2">
+      <div className="top-25 mx-4 flex justify-between items-center gap-2">
         <Button
           variant={"outline"}
           size={"icon"}
@@ -164,13 +164,21 @@ function Page() {
         >
           <ChevronLeft />
         </Button>
-
-        <Button variant={"outline"} onClick={onSave}>
-          저장
-        </Button>
-        <Button variant={"outline"} onClick={onSave}>
-          삭제
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant={"ghost"}
+            className="bg-green-50 text-green-500 hover:bg-green-100 hover: text-green-600"
+            onClick={handleSave}
+          >
+            저장
+          </Button>
+          <Button
+            variant={"ghost"}
+            className="bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600"
+          >
+            삭제
+          </Button>
+        </div>
       </div>
       <header className="w-full flex flex-col  py-[20px] px-[24px]  bg-white">
         <div className="flex flex-col w-full">
@@ -184,10 +192,7 @@ function Page() {
           <div className="flex items-center justify-start gap-[16px] mt-[8px] mb-[16px]">
             <span className="text-[#6d6d6d]">0/10 completed</span>
             {/* 프로그레스 바 UI */}
-            <Progress
-              value={33}
-              className="w-[40%] h-2"
-            />
+            <Progress value={33} className="w-[40%] h-2" />
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-[20px]">

@@ -14,8 +14,7 @@ import {
 } from "@/components/ui";
 import styles from "./MarkdownDialog.module.scss";
 import MDEditor from "@uiw/react-md-editor";
-import { supabase } from "@/utils/supabase";
-
+import { supabase } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { useState } from "react";

@@ -4,7 +4,7 @@ import { Button, Input } from "@/components/ui";
 import styles from "./SideNavigation.module.scss";
 import { Dot, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";

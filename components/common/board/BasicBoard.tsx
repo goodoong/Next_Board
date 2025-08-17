@@ -2,7 +2,7 @@ import { Button, Checkbox, Card } from "@/components/ui";
 import styles from "./BasicBoard.module.scss";
 import { ChevronUp } from "lucide-react";
 import MarkdownDialog from "../dialog/MarkdownDialog";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/utils/supabase/client";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import MDEditor from "@uiw/react-md-editor";

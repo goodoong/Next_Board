@@ -2,7 +2,7 @@
 //클라이언트 쪽에서 렌더링 됨을 명시
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/utils/supabase/client";
 import { toast } from "sonner";
 
 function InitPage() {
