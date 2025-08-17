@@ -4,155 +4,61 @@ import { Button, Progress, LabelDatePicker } from "@/components/ui";
 
 import Image from "next/image";
 import BasicBoard from "@/components/common/board/BasicBoard";
-import { usePathname, useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useEffect, useState } from "react";
-import { supabase } from "@/utils/supabase/client";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { nanoid } from "nanoid";
 import { ChevronLeft } from "lucide-react";
-import { useAtom } from "jotai";
-import { sidebarStateAtom } from "@/store";
+import { Board } from "@/types";
+import { useCreateBoard } from "@/hooks/apis";
 
-interface Todo {
-  id: number;
-  title: string;
-  start_date: string | Date;
-  end_date: string | Date;
-  contents: BoardContent[];
-}
-
-interface BoardContent {
-  boardId: string | number;
-  isCompleted: boolean;
-  title: string;
-  startDate: string;
-  endDate: string;
-  content: string;
-}
-
-function Page() {
+function TaskPage() {
   const router = useRouter();
-  const pathname = usePathname();
+  const { id } = useParams();
+  const createBoard = useCreateBoard();
 
-  const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom);
-  const [board, setBoard] = useState<Todo>();
+  const [boards, setBoards] = useState<Board[]>([]);
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [title, setTitle] = useState<string>("");
 
-  const insertRowData = async (contents: BoardContent[]) => {
-    //supabase 데이터베이스에 연동
-    if (board?.contents) {
-      const { data, error, status } = await supabase
-        .from("todos")
-        .update({
-          contents: contents,
-        })
-        .eq("id", pathname.split("/")[2])
-        .select();
-
-      if (error) {
-        console.log(error);
-        toast("에러가 발생했습니다.", {
-          description: "콘솔 창에 출력된 에러를 확인하세요.",
-        });
-      }
-      if (status === 200) {
-        toast("추가 완료", {
-          description: "새로운 TO DO BOARD가 생성되었습니다.",
-        });
-        getData();
-      }
-    } else {
-      const { data, error, status } = await supabase
-        .from("todos")
-        .insert({
-          contents: contents,
-        })
-        .eq("id", pathname.split("/")[2])
-        .select();
-
-      if (error) {
-        console.log(error);
-        toast("에러가 발생했습니다.", {
-          description: "콘솔 창에 출력된 에러를 확인하세요.",
-        });
-      }
-      if (status === 201) {
-        toast("생성 완료", {
-          description: "새로운 TO DO BOARD가 생성되었습니다.",
-        });
-        getData();
-      }
-    }
-  };
-  const createBoard = () => {
-    let newContents: BoardContent[] = [];
-    const BoardContent = {
-      boardId: nanoid(),
+  // Task 내의 Board 생성
+  const handleAddBoard = () => {
+    const newBoard: Board = {
+      id: nanoid(),
       isCompleted: false,
       title: "",
-      startDate: "",
-      endDate: "",
+      startDate: undefined,
+      endDate: undefined,
       content: "",
     };
 
-    if (board && board.contents.length > 0) {
-      newContents = [...board.contents];
-      //기존 데이터에 새로운 데이터 추가
-      newContents.push(BoardContent);
-      insertRowData(newContents);
-    } else if (board && board.contents.length === 0) {
-      newContents.push(BoardContent);
-      insertRowData(newContents);
-    }
-  };
-  //supabase에 기존에 생성된 보드가 있는지 없는지 확인
-  const getData = async () => {
-    const {
-      data: todos,
-      error,
-      status,
-    } = await supabase.from("todos").select("*");
-
-    if (todos !== null) {
-      todos.forEach((item: Todo) => {
-        if (item.id === Number(pathname.split("/")[2])) {
-          setBoard(item);
-          setTitle(item.title); //board를 가져온 후에 title 값을 갱신
-        }
-      });
-    }
+    const newBoards = [...boards, newBoard];
+    setBoards(newBoards);
+    //실제 supabase와 통신하는 hook
+    createBoard(Number(id), "contents", newBoards);
   };
 
-  const handleSave = async () => {
-    const { data, error, status } = await supabase
-      .from("todos")
-      .update({
-        title: title,
-      })
-      .eq("id", pathname.split("/")[2]);
-
-    if (error) {
-      console.log(error);
-      toast("에러가 발생했습니다.", {
-        description: "콘솔 창에 출력된 에러를 확인하세요.",
-      });
-    }
-    if (status === 204) {
-      toast("제목 업데이트 완료", {
-        description: "새로운 title이 설정되었습니다.",
-      });
-      getData();
-
-      //상태 변경 함수(ex: onSave가 호출될 때 상태 변경)
-      setSidebarState("updated");
-    }
+  const handleSave = () => {
+    // const { data, error, status } = await supabase
+    //   .from("todos")
+    //   .update({
+    //     title: title,
+    //   })
+    //   .eq("id", pathname.split("/")[2]);
+    // if (error) {
+    //   console.log(error);
+    //   toast("에러가 발생했습니다.", {
+    //     description: "콘솔 창에 출력된 에러를 확인하세요.",
+    //   });
+    // }
+    // if (status === 204) {
+    //   toast("제목 업데이트 완료", {
+    //     description: "새로운 title이 설정되었습니다.",
+    //   });
+    //   //상태 변경 함수(ex: onSave가 호출될 때 상태 변경)
+    //   setSidebarState("updated");
+    // }
   };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   return (
     <div className="w-full">
@@ -202,7 +108,7 @@ function Page() {
             </div>
             <Button
               variant={"outline"}
-              onClick={createBoard}
+              onClick={handleAddBoard}
               className="w-[15%] border-emerald-400 bg-emerald-400 text-white hover:bg-emerald-600  hover:text-white"
             >
               Add New Board
@@ -211,7 +117,7 @@ function Page() {
         </div>
       </header>
       <main className="flex items-center justify-center w-full py-[28px] px-[16px]">
-        {board?.contents.length === 0 ? (
+        {boards?.contents.length === 0 ? (
           <div className="flex items-center justify-center w-full h-full">
             <div className="flex flex-col items-center">
               <span className="text-[24px] font-semibold text-[#454545]">
@@ -222,7 +128,7 @@ function Page() {
               </span>
               <button
                 className="flex items-center justify-center w-[74px] h-[74px] outline-none border-none cursor-pointer"
-                onClick={createBoard}
+                onClick={handleAddBoard}
               >
                 <Image
                   src="/assets/img/plus-button.svg"
@@ -235,12 +141,12 @@ function Page() {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-start w-full h-full gap-4 overflow-y-scroll">
-            {board?.contents.map((board: BoardContent) => {
+            {boards?.contents.map((board: BoardContent) => {
               return (
                 <BasicBoard
                   key={board.boardId}
                   data={board}
-                  handleBoards={setBoard}
+                  handleBoards={setBoards}
                 />
               );
             })}
@@ -251,4 +157,4 @@ function Page() {
   );
 }
 
-export default Page;
+export default TaskPage;
