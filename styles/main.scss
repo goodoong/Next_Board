@@ -4,10 +4,11 @@
   padding: 0;
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
 ::-webkit-scrollbar {
   display: none;
 }
+}
+
 
 .page {
   width: 100%;
@@ -35,6 +36,7 @@
     border-left: 1px solid #f4f4f5;
     border-right: 1px solid #f4f4f5;
   }
+  
   &__main{
     width: calc(100% - 282px);
     height: 100%;

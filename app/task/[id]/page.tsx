@@ -3,7 +3,7 @@
 import { Button, Progress, LabelDatePicker } from "@/components/ui";
 
 import Image from "next/image";
-import BasicBoard from "@/components/common/board/BasicBoard";
+import { BoardCard } from "@/components/common";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { nanoid } from "nanoid";
@@ -70,7 +70,7 @@ function TaskPage() {
         >
           <ChevronLeft />
         </Button>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           <Button
             variant={"ghost"}
             className="bg-green-50 text-green-500 hover:bg-green-100 hover: text-green-600"
@@ -116,43 +116,34 @@ function TaskPage() {
           </div>
         </div>
       </header>
-      <main className="flex items-center justify-center w-full py-[28px] px-[16px]">
-        {boards?.contents.length === 0 ? (
-          <div className="flex items-center justify-center w-full h-full">
-            <div className="flex flex-col items-center">
-              <span className="text-[24px] font-semibold text-[#454545]">
-                There is no board yet
-              </span>
-              <span className="text-[18px] text-[#454545] mt-[18px] mb-[28px]">
-                Click the button and start flashing!
-              </span>
-              <button
-                className="flex items-center justify-center w-[74px] h-[74px] outline-none border-none cursor-pointer"
-                onClick={handleAddBoard}
-              >
-                <Image
-                  src="/assets/img/plus-button.svg"
-                  alt="plus-button"
-                  width={100}
-                  height={100}
-                />
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-start w-full h-full gap-4 overflow-y-scroll">
-            {boards?.contents.map((board: BoardContent) => {
-              return (
-                <BasicBoard
-                  key={board.boardId}
-                  data={board}
-                  handleBoards={setBoards}
-                />
-              );
+      <div className="flex items-center justify-center w-full h-full p-[24px]">
+        {boards.length !== 0 ? (
+          <div className="w-full h-full flex flex-col items-center justify-start">
+            {/* Add New Board 버튼 클릭으로 인한 Board 데이터가 있을 경우 */}
+            {boards.map((board: Board) => {
+              return <BoardCard key={board.id} />;
             })}
           </div>
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center">
+            {/* Add New Board 버튼 클릭으로 인한 Board 데이터가 없을 경우 */}
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+              There is no board yet.
+            </h3>
+           <span className="text-[18px] text-[#454545] mt-[18px] mb-[28px]">
+                Click the button and start flashing!
+              </span>
+            <button onClick={handleAddBoard}>
+              <Image
+                src="/assets/img/plus-button.svg"
+                alt="plus-button"
+                width={74}
+                height={74}
+              />
+            </button>
+          </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

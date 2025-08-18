@@ -2,7 +2,7 @@
 
 import { Button, Input } from "@/components/ui";
 import { Search } from "lucide-react";
-import { useCreateTask } from "@/app/hooks/apis";
+import { useCreateTask } from "@/hooks/apis";
 
 function SideNavigation() {
   const handleCreateTask = useCreateTask();
