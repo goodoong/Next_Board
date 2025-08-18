@@ -62,7 +62,7 @@ function TaskPage() {
 
   return (
     <div className="w-full">
-      <div className="top-25 mx-4 flex justify-between items-center gap-2">
+      <div className="bg-white top-25 mx-4 pt-4 flex justify-between items-center gap-2">
         <Button
           variant={"outline"}
           size={"icon"}
@@ -73,6 +73,7 @@ function TaskPage() {
         <div className="flex items-center gap-2">
           <Button
             variant={"ghost"}
+             size="lg"
             className="bg-green-50 text-green-500 hover:bg-green-100 hover: text-green-600"
             onClick={handleSave}
           >
@@ -80,6 +81,7 @@ function TaskPage() {
           </Button>
           <Button
             variant={"ghost"}
+             size="lg"
             className="bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600"
           >
             삭제
