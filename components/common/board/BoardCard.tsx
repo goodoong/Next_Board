@@ -76,14 +76,13 @@ function BoardCard() {
       {/* 게시물 카드 제목 영역 */}
       <div className="w-full flex items-center justify-between mb-4">
         <div className="w-full flex items-center justify-start gap-2">
-          <Checkbox className="h-5 w-5" checked={true}>
+          <Checkbox className="h-5 w-5" checked={true}/>
             <input
               type="text"
               placeholder="등록된 제목이 없습니다."
               className="w-full text-xl outline-none bg-transparent"
               disabled={true}
             />
-          </Checkbox>
         </div>
         <Button variant={"ghost"} size={"icon"}>
           <ChevronUp className="text-[#6d6d6d]" />
