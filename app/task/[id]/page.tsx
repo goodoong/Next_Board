@@ -5,21 +5,30 @@ import { Button, Progress, LabelDatePicker } from "@/components/ui";
 import Image from "next/image";
 import { BoardCard } from "@/components/common";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 import { ChevronLeft } from "lucide-react";
 import { Board } from "@/types";
-import { useCreateBoard } from "@/hooks/apis";
+import { useGetTaskById, useCreateBoard } from "@/hooks/apis";
 
 function TaskPage() {
   const router = useRouter();
   const { id } = useParams();
   const createBoard = useCreateBoard();
-
+  const { task } = useGetTaskById(Number(id));
   const [boards, setBoards] = useState<Board[]>([]);
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [title, setTitle] = useState<string>("");
+
+  useEffect(() => {
+    if (task) {
+      setTitle(task.title || "");
+      setStartDate(task.start_date ? new Date(task.start_date) : undefined);
+      setEndDate(task.end_date ? new Date(task.end_date) : undefined);
+      setBoards(task.contents);
+    }
+  }, [task]);
 
   // Task 내의 Board 생성
   const handleAddBoard = () => {
@@ -73,7 +82,7 @@ function TaskPage() {
         <div className="flex items-center gap-2">
           <Button
             variant={"ghost"}
-             size="lg"
+            size="lg"
             className="bg-green-50 text-green-500 hover:bg-green-100 hover: text-green-600"
             onClick={handleSave}
           >
@@ -81,7 +90,7 @@ function TaskPage() {
           </Button>
           <Button
             variant={"ghost"}
-             size="lg"
+            size="lg"
             className="bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600"
           >
             삭제
@@ -120,10 +129,10 @@ function TaskPage() {
       </header>
       <div className="flex items-center justify-center w-full h-full p-[24px]">
         {boards.length !== 0 ? (
-          <div className="w-full h-full flex flex-col items-center justify-start">
+          <div className="w-full h-full flex flex-col items-center justify-start gap-4">
             {/* Add New Board 버튼 클릭으로 인한 Board 데이터가 있을 경우 */}
             {boards.map((board: Board) => {
-              return <BoardCard key={board.id} board={board}/>;
+              return <BoardCard key={board.id} board={board} />;
             })}
           </div>
         ) : (
@@ -132,9 +141,9 @@ function TaskPage() {
             <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
               There is no board yet.
             </h3>
-           <span className="text-[18px] text-[#454545] mt-[18px] mb-[28px]">
-                Click the button and start flashing!
-              </span>
+            <span className="text-[18px] text-[#454545] mt-[18px] mb-[28px]">
+              Click the button and start flashing!
+            </span>
             <button onClick={handleAddBoard}>
               <Image
                 src="/assets/img/plus-button.svg"
