@@ -123,7 +123,7 @@ function TaskPage() {
           <div className="w-full h-full flex flex-col items-center justify-start">
             {/* Add New Board 버튼 클릭으로 인한 Board 데이터가 있을 경우 */}
             {boards.map((board: Board) => {
-              return <BoardCard key={board.id} />;
+              return <BoardCard key={board.id} board={board}/>;
             })}
           </div>
         ) : (
