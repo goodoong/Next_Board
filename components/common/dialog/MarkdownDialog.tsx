@@ -15,7 +15,7 @@ import {
 import MDEditor from "@uiw/react-md-editor";
 import { toast } from "sonner";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { DialogDescription } from "@/components/ui/dialog";
 import { Task, Board } from "@/types";
@@ -43,12 +43,17 @@ function MarkdownDialog({ board, children }: Props) {
   );
 
   const initState = () => {
-    setIsCompleted(false);
-    setTitle("");
-    setStartDate(undefined);
-    setEndDate(undefined);
-    setContent("**hello world!**");
+    setIsCompleted(board.isCompleted || false);
+    setTitle(board.title||"");
+    setStartDate(board.startDate? new Date(board.startDate):undefined);
+    setEndDate(board.endDate? new Date(board.endDate):undefined);
+    setContent(board.content||"**hello world!**");
   };
+
+    useEffect(()=>{
+    initState();
+  }, [board]);
+
 
   // 다이얼로그 닫기
   const handleCloseDialog = () => {
@@ -73,7 +78,7 @@ function MarkdownDialog({ board, children }: Props) {
         }
         return board;
       });
-      await updateBoard(Number(id), "boards", newBoards);
+      await updateBoard(Number(id), "contents", newBoards);
       handleCloseDialog();
     } catch (error) {
       // 네트워크 오류나 예기치 않은 에러를 잡기 위해 catch 구문 사용
@@ -96,6 +101,7 @@ function MarkdownDialog({ board, children }: Props) {
                 placeholder="Write a title for your board."
                 className=" w-full text-xl outline-none bg-transparent"
                 onChange={(event) => setTitle(event.target.value)}
+                value={title ?? ""}
               />
             </div>
           </DialogTitle>
