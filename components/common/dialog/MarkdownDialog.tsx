@@ -88,7 +88,9 @@ function MarkdownDialog({ board, children }: Props) {
         <DialogHeader>
           <DialogTitle>
             <div className="flex items-center justify-start gap-2">
-              <Checkbox className="w-5 min-w-5 h-5" checked={true} />
+              <Checkbox className="w-5 min-w-5 h-5" checked={isCompleted} onCheckedChange={(checked)=>{
+                if(typeof checked === 'boolean') setIsCompleted(checked);
+              }} />
               <input
                 type="text"
                 placeholder="Write a title for your board."
@@ -103,8 +105,8 @@ function MarkdownDialog({ board, children }: Props) {
         </DialogHeader>
         {/* 캘린더 박스  */}
         <div className="flex items-center gap-5">
-          <LabelDatePicker label="From" />
-          <LabelDatePicker label="To" />
+          <LabelDatePicker label="From" value={startDate} onChange={setStartDate}/>
+          <LabelDatePicker label="To" value={endDate} onChange={setEndDate}/>
         </div>
         <Separator />
         {/* 마크다운 에디터 UI 영역 */}

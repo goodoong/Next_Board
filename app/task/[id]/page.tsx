@@ -114,8 +114,8 @@ function TaskPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-[20px]">
               {/* 캘린더 UI */}
-              <LabelDatePicker label="From" readonly={true} />
-              <LabelDatePicker label="To" />
+              <LabelDatePicker label="From" readonly={true} value={startDate} />
+              <LabelDatePicker label="To" value={endDate}/>
             </div>
             <Button
               variant={"outline"}
