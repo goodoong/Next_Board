@@ -12,7 +12,6 @@ import {
   Button,
   Separator,
 } from "@/components/ui";
-import styles from "./MarkdownDialog.module.scss";
 import MDEditor from "@uiw/react-md-editor";
 import { toast } from "sonner";
 import { DialogClose } from "@radix-ui/react-dialog";
@@ -21,6 +20,8 @@ import { useParams } from "next/navigation";
 import { DialogDescription } from "@/components/ui/dialog";
 import { Task, Board } from "@/types";
 import { useCreateBoard } from "@/hooks/apis";
+import { useAtomValue } from "jotai";
+import { taskAtom } from "@/store/atoms";
 
 interface Props {
   children: React.ReactNode;
@@ -30,6 +31,7 @@ interface Props {
 function MarkdownDialog({ board, children }: Props) {
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const { id } = useParams();
+  const task = useAtomValue(taskAtom);
   const updateBoard = useCreateBoard();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
@@ -65,7 +67,7 @@ function MarkdownDialog({ board, children }: Props) {
     //해당 Board에 대한 데이터가 수정이 되도록 한다.
     try {
       // boards 배열에서 선택한 board를 찾고, 수정된 값으로 업데이트
-      const newBoards = task.boards.map((board: Board) => {
+      const newBoards = task?.contents.map((board: Board) => {
         if (board.id === boardId) {
           return { ...board, isCompleted, title, startDate, endDate, content };
         }
@@ -106,7 +108,7 @@ function MarkdownDialog({ board, children }: Props) {
         </div>
         <Separator />
         {/* 마크다운 에디터 UI 영역 */}
-        <MDEditor onChange={setContent} height={320 + "px"} />
+        <MDEditor value={content} onChange={setContent} height={320 + "px"} />
 
         <DialogFooter>
           <DialogClose asChild>
