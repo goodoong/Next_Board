@@ -77,4 +77,4 @@ function SideNavigation() {
   );
 }
 
-export default SideNavigation;
+export {SideNavigation};
