@@ -16,3 +16,14 @@ export {Popover, PopoverTrigger, PopoverContent} from "./popover";
 export {Progress} from "./progress";
 export {Separator} from "./separator";
 export {Toaster} from "./sonner";
+export {  AlertDialog,
+  AlertDialogPortal,
+  AlertDialogOverlay,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,} from "./alert-diaglog";

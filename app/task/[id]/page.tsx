@@ -1,9 +1,9 @@
 "use client";
 
-import { Button, Progress, LabelDatePicker } from "@/components/ui";
+import { Button, Progress, LabelDatePicker, } from "@/components/ui";
 
 import Image from "next/image";
-import { BoardCard } from "@/components/common";
+import { BoardCard, DeleteTaskPopup } from "@/components/common";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
@@ -88,6 +88,7 @@ function TaskPage() {
           >
             저장
           </Button>
+          <DeleteTaskPopup>
           <Button
             variant={"ghost"}
             size="lg"
@@ -95,6 +96,7 @@ function TaskPage() {
           >
             삭제
           </Button>
+          </DeleteTaskPopup>
         </div>
       </div>
       <header className="w-full flex flex-col  py-[20px] px-[24px]  bg-white">
