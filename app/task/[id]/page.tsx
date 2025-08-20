@@ -60,6 +60,7 @@ function TaskPage() {
         description: "제목, 시작일, 종료일은 필수 값입니다.",
         className: "bg-red-500 text-white border-red-600",
       });
+      return;
     }
     try {
       const { data, error, status } = await supabase
