@@ -1,20 +1,27 @@
 "use client";
 
-import { Button, Progress, LabelDatePicker, } from "@/components/ui";
+import { Button, Progress, LabelDatePicker } from "@/components/ui";
 
 import Image from "next/image";
-import { BoardCard, DeleteTaskPopup } from "@/components/common";
+import {
+  BoardCard,
+  DeleteTaskPopup,
+  SideNavigation,
+} from "@/components/common";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 import { ChevronLeft } from "lucide-react";
 import { Board } from "@/types";
-import { useGetTaskById, useCreateBoard } from "@/hooks/apis";
+import { useGetTaskById, useCreateBoard, useGetTasks } from "@/hooks/apis";
+import { toast } from "sonner";
+import { supabase } from "@/utils/supabase/client";
 
 function TaskPage() {
   const router = useRouter();
   const { id } = useParams();
   const createBoard = useCreateBoard();
+  const { getTasks } = useGetTasks();
   const { task } = useGetTaskById(Number(id));
   const [boards, setBoards] = useState<Board[]>([]);
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
@@ -47,26 +54,46 @@ function TaskPage() {
     createBoard(Number(id), "contents", newBoards);
   };
 
-  const handleSave = () => {
-    // const { data, error, status } = await supabase
-    //   .from("todos")
-    //   .update({
-    //     title: title,
-    //   })
-    //   .eq("id", pathname.split("/")[2]);
-    // if (error) {
-    //   console.log(error);
-    //   toast("에러가 발생했습니다.", {
-    //     description: "콘솔 창에 출력된 에러를 확인하세요.",
-    //   });
-    // }
-    // if (status === 204) {
-    //   toast("제목 업데이트 완료", {
-    //     description: "새로운 title이 설정되었습니다.",
-    //   });
-    //   //상태 변경 함수(ex: onSave가 호출될 때 상태 변경)
-    //   setSidebarState("updated");
-    // }
+  const handleSave = async () => {
+    if (!title || !startDate || !endDate) {
+      toast("기입되지 않은 데이터가 있습니다.", {
+        description: "제목, 시작일, 종료일은 필수 값입니다.",
+        className: "bg-red-500 text-white border-red-600",
+      });
+    }
+    try {
+      const { data, error, status } = await supabase
+        .from("todos")
+        .update({
+          title: title,
+          start_date: startDate,
+          end_date: endDate,
+        })
+        .eq("id", id)
+        .select();
+
+      if (data && status === 200) {
+        toast("TASK 저장 완료", {
+          description: "TASK의 마감일을 꼭 지켜주세요!",
+        });
+        // 서버에서 데이터 갱신 후 상태값 업데이트
+        // SideNavigation 컴포넌트 리스트 정보를 실시간으로 업데이트하기 위해 getTasks 호출
+        getTasks();
+      }
+      if (error) {
+        toast("에러 발생", {
+          description: `Supabase 오류: ${error.message}`,
+          className: "bg-red-500 text-white border-red-600",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast("네트워크 오류", {
+        description: `서버와 연결할 수 없습니다. 다시 시도해주세요
+          ${error}`,
+        className: "bg-red-500 text-white border-red-600",
+      });
+    }
   };
 
   return (
@@ -89,13 +116,13 @@ function TaskPage() {
             저장
           </Button>
           <DeleteTaskPopup>
-          <Button
-            variant={"ghost"}
-            size="lg"
-            className="bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600"
-          >
-            삭제
-          </Button>
+            <Button
+              variant={"ghost"}
+              size="lg"
+              className="bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600"
+            >
+              삭제
+            </Button>
           </DeleteTaskPopup>
         </div>
       </div>
@@ -116,8 +143,16 @@ function TaskPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-[20px]">
               {/* 캘린더 UI */}
-              <LabelDatePicker label="From" readonly={true} value={startDate} />
-              <LabelDatePicker label="To" value={endDate}/>
+              <LabelDatePicker
+                label="From"
+                value={startDate}
+                onChange={setStartDate}
+              />
+              <LabelDatePicker
+                label="To"
+                value={endDate}
+                onChange={setEndDate}
+              />
             </div>
             <Button
               variant={"outline"}
