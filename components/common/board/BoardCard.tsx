@@ -10,8 +10,12 @@ import {
 import { ChevronUp } from "lucide-react";
 import { MarkdownDialog } from "@/components/common";
 import { Board } from "@/types";
-import { useDeleteBoard } from "@/hooks/apis";
+import { useCreateBoard, useDeleteBoard } from "@/hooks/apis";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
+import { useAtomValue } from "jotai";
+import { taskAtom } from "@/store/atoms";
+import { useState } from "react";
 
 interface Props {
   board: Board;
@@ -21,6 +25,42 @@ function BoardCard({ board }: Props) {
   const { id } = useParams();
   //TASK의 개발 TODO-BOARD 삭제
   const handleDeleteBoard = useDeleteBoard(Number(id), board.id);
+  const task = useAtomValue(taskAtom);
+  const updateBoard = useCreateBoard();
+
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    board.startDate ? new Date(board.startDate) : undefined
+  );
+  const [endDate, setEndDate] = useState<Date | undefined>(
+    board.startDate ? new Date(board.startDate) : undefined
+  );
+
+  //등록 버튼 클릭 시
+  const handleSaveBoard = async (boardId: string) => {
+    if (!board.title) {
+      toast("TODO-BOARD를 저장할 수 없습니다.", {
+        description: "TODO-BOARD를 저장하기 전 제목을 먼저 등록해주세요",
+        className: "bg-red-500 text-white border-red-600",
+      });
+      return;
+    }
+    if (!startDate || !endDate)
+      //해당 Board에 대한 데이터가 수정이 되도록 한다.
+      try {
+        // boards 배열에서 선택한 board를 찾고, 수정된 값으로 업데이트
+        const newBoards = task?.contents.map((board: Board) => {
+          if (board.id === boardId) {
+            return { ...board, startDate, endDate };
+          }
+          return board;
+        });
+        await updateBoard(Number(id), "contents", newBoards);
+      } catch (error) {
+        // 네트워크 오류나 예기치 않은 에러를 잡기 위해 catch 구문 사용
+        throw error;
+      }
+  };
+
   return (
     <Card className="w-full flex flex-col items-center p-5">
       {/* 게시물 카드 제목 영역 */}
@@ -52,8 +92,12 @@ function BoardCard({ board }: Props) {
         </div>
         {/* 버튼 박스 */}
         <div className="flex items-center">
-          <Button variant={"ghost"} className="font-normal text-[#6d6d6d]">
-            Duplicate
+          <Button
+            onClick={() => handleSaveBoard}
+            variant={"ghost"}
+            className="font-normal text-[#6d6d6d]"
+          >
+            Save
           </Button>
           <Button
             onClick={() => handleDeleteBoard(Number(id), board.id)}

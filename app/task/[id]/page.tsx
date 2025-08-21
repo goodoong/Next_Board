@@ -27,6 +27,7 @@ function TaskPage() {
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [title, setTitle] = useState<string>("");
+const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
     if (task) {
@@ -97,6 +98,12 @@ function TaskPage() {
     }
   };
 
+  useEffect(()=> {
+if(task?.contents) {
+ const completedCount = task.contents.filter((board: Board) => board.isCompleted).length;
+ setCount(completedCount);
+}
+  }, [task?.contents])
   return (
     <div className="w-full">
       <div className="bg-white top-25 mx-4 pt-4 flex justify-between items-center gap-2">
@@ -137,7 +144,7 @@ function TaskPage() {
             className="text-[36px] font-semibold outline-none placeholder:text-[#c4c4c4]"
           />
           <div className="flex items-center justify-start gap-[16px] mt-[8px] mb-[16px]">
-            <span className="text-[#6d6d6d]">0/10 completed</span>
+            <span className="text-[#6d6d6d]">{count}/{task?.contents.length} completed</span>
             {/* 프로그레스 바 UI */}
             <Progress value={33} className="w-[40%] h-2" />
           </div>
