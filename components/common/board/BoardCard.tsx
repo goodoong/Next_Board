@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useAtomValue } from "jotai";
 import { taskAtom } from "@/store/atoms";
 import { useState } from "react";
+import MDEditor from "@uiw/react-md-editor";
 
 interface Props {
   board: Board;
@@ -26,7 +27,7 @@ function BoardCard({ board }: Props) {
   //TASK의 개발 TODO-BOARD 삭제
   const handleDeleteBoard = useDeleteBoard(Number(id), board.id);
   const task = useAtomValue(taskAtom);
-    const { getTaskById } = useGetTaskById(Number(id));
+  const { getTaskById } = useGetTaskById(Number(id));
 
   const updateBoard = useCreateBoard();
 
@@ -111,6 +112,16 @@ function BoardCard({ board }: Props) {
           </Button>
         </div>
       </div>
+      {/* 마크다운 에디터 UI 영역 */}
+      {board.content ? (
+        <MDEditor
+          value={board.content ? board.content : ""}
+          height={320 + "px"}
+          style={{width: 100 + "%", marginTop: 16 + "px"}}
+        />
+      ) : (
+        ""
+      )}
       <Separator className="my-3" />
       <MarkdownDialog board={board}>
         <Button variant={"ghost"} className="font-normal text-[#6d6d6d]">
