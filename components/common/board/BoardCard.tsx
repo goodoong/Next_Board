@@ -7,7 +7,7 @@ import {
   LabelDatePicker,
   Separator,
 } from "@/components/ui";
-import { ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { MarkdownDialog } from "@/components/common";
 import { Board } from "@/types";
 import { useCreateBoard, useDeleteBoard, useGetTaskById } from "@/hooks/apis";
@@ -37,6 +37,7 @@ function BoardCard({ board }: Props) {
   const [endDate, setEndDate] = useState<Date | undefined>(
     board.startDate ? new Date(board.startDate) : undefined
   );
+  const [isShowContent, setIsShowContent] = useState<boolean>(false);
 
   //등록 버튼 클릭 시
   const handleSaveBoard = async (boardId: string) => {
@@ -79,8 +80,16 @@ function BoardCard({ board }: Props) {
             value={board.title}
           />
         </div>
-        <Button variant={"ghost"} size={"icon"}>
-          <ChevronUp className="text-[#6d6d6d]" />
+        <Button
+          variant={"ghost"}
+          size={"icon"}
+          onClick={() => setIsShowContent(!isShowContent)}
+        >
+          {isShowContent ? (
+            <ChevronUp className="text-[#6d6d6d]" />
+          ) : (
+            <ChevronDown className="text-[#6d6d6d]" />
+          )}
         </Button>
       </div>
       {/* 캘린더 및 버튼 박스 영역 */}
@@ -113,14 +122,12 @@ function BoardCard({ board }: Props) {
         </div>
       </div>
       {/* 마크다운 에디터 UI 영역 */}
-      {board.content ? (
+      {isShowContent && (
         <MDEditor
           value={board.content ? board.content : ""}
           height={320 + "px"}
-          style={{width: 100 + "%", marginTop: 16 + "px"}}
+          style={{ width: 100 + "%", marginTop: 16 + "px" }}
         />
-      ) : (
-        ""
       )}
       <Separator className="my-3" />
       <MarkdownDialog board={board}>
