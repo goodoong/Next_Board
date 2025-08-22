@@ -10,7 +10,7 @@ import {
 import { ChevronUp } from "lucide-react";
 import { MarkdownDialog } from "@/components/common";
 import { Board } from "@/types";
-import { useCreateBoard, useDeleteBoard } from "@/hooks/apis";
+import { useCreateBoard, useDeleteBoard, useGetTaskById } from "@/hooks/apis";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { useAtomValue } from "jotai";
@@ -26,6 +26,8 @@ function BoardCard({ board }: Props) {
   //TASK의 개발 TODO-BOARD 삭제
   const handleDeleteBoard = useDeleteBoard(Number(id), board.id);
   const task = useAtomValue(taskAtom);
+    const { getTaskById } = useGetTaskById(Number(id));
+
   const updateBoard = useCreateBoard();
 
   const [startDate, setStartDate] = useState<Date | undefined>(
@@ -55,6 +57,7 @@ function BoardCard({ board }: Props) {
           return board;
         });
         await updateBoard(Number(id), "contents", newBoards);
+        getTaskById();
       } catch (error) {
         // 네트워크 오류나 예기치 않은 에러를 잡기 위해 catch 구문 사용
         throw error;

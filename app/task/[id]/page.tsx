@@ -146,7 +146,7 @@ if(task?.contents) {
           <div className="flex items-center justify-start gap-[16px] mt-[8px] mb-[16px]">
             <span className="text-[#6d6d6d]">{count}/{task?.contents.length} completed</span>
             {/* 프로그레스 바 UI */}
-            <Progress value={33} className="w-[40%] h-2" />
+            <Progress value={task && task.contents.length>0? (count/task.contents.length)*100 : 0} className="w-[40%] h-2" />
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-[20px]">
