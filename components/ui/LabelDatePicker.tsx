@@ -24,7 +24,7 @@ function LabelDatePicker({ label, readonly, value, onChange }: Props) {
     <div className="flex items-center gap-[12px]">
       <span className="text-[#6d6d6d]">{label}</span>
       {/* shadcn UI - calendar */}
-      <Popover>
+      <Popover modal={true}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
