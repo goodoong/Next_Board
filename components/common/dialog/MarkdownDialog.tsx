@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { DialogDescription } from "@/components/ui/dialog";
 import { Task, Board } from "@/types";
-import { useCreateBoard } from "@/hooks/apis";
+import { useCreateBoard, useGetTaskById } from "@/hooks/apis";
 import { useAtomValue } from "jotai";
 import { taskAtom } from "@/store/atoms";
 
@@ -32,6 +32,7 @@ function MarkdownDialog({ board, children }: Props) {
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const { id } = useParams();
   const task = useAtomValue(taskAtom);
+  const { getTaskById } = useGetTaskById(Number(id));
   const updateBoard = useCreateBoard();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
@@ -79,6 +80,7 @@ function MarkdownDialog({ board, children }: Props) {
         return board;
       });
       await updateBoard(Number(id), "contents", newBoards);
+      getTaskById();
       handleCloseDialog();
     } catch (error) {
       // 네트워크 오류나 예기치 않은 에러를 잡기 위해 catch 구문 사용

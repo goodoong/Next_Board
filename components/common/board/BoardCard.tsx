@@ -65,6 +65,7 @@ function BoardCard({ board }: Props) {
         throw error;
       }
   };
+  
 
   return (
     <Card className="w-full flex flex-col items-center p-5">
